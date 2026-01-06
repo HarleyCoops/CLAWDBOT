@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm config:*)",
+      "Bash(test:*)",
+      "Bash(git remote:*)",
+      "Bash(git push:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\ndocs: add comprehensive WSL + Bun setup guide and troubleshooting\n\nReplace hero image section with critical WSL setup documentation\nto help users avoid common pitfalls:\n\n- Document pnpm permission errors on Windows mounts \\(/mnt/c/\\)\n- Add Node.js v22+ requirement and nvm installation\n- Document Homebrew requirement for skills\n- Add Bun installation and usage guide\n- Document build process issues and solutions\n- Add complete WSL setup checklist\n- List outstanding issues as TODO checklist\n\nIssues documented:\n- Permission errors with pnpm on WSL Windows mounts\n- Node version mismatch \\(v20 vs v22 requirement\\)\n- Skills blocked by missing Homebrew\n- Homebrew network/DNS failures during installation\n- Gateway not detecting Homebrew PATH without restart\n- Build errors from missing dependencies\n- Package manager confusion \\(pnpm vs bun\\)\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
+    ]
+  }
+}

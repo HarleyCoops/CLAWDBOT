@@ -1,12 +1,137 @@
 # 🦞 CLAWDBOT — Personal AI Assistant
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/clawdbot/clawdbot/main/docs/whatsapp-clawd.jpg" alt="CLAWDBOT" width="400">
-</p>
-
-<p align="center">
   <strong>EXFOLIATE! EXFOLIATE!</strong>
 </p>
+
+---
+
+## ⚠️ CRITICAL: WSL + Bun Setup Issues & Solutions
+
+**If you're running on WSL (Windows Subsystem for Linux), READ THIS FIRST to avoid hours of debugging:**
+
+### 🚨 Known Issues & Solutions
+
+#### 1. **pnpm Permission Errors on Windows Mounts (`/mnt/c/`)**
+```
+ERR_PNPM_EACCES  EACCES: permission denied, rename
+```
+**Solution:** Move project to WSL native filesystem (`~/clawdbot`) instead of `/mnt/c/`. Much faster performance too.
+```bash
+cp -r /mnt/c/Users/YOUR_USER/clawdbot ~/clawdbot
+cd ~/clawdbot
+```
+
+#### 2. **Node Version Mismatch**
+```
+WARN Unsupported engine: wanted: {"node":">=22.12.0"} (current: {"node":"v20.x.x"})
+```
+**Solution:** Install Node.js v22+ using nvm:
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+nvm install 22 && nvm use 22 && nvm alias default 22
+```
+
+#### 3. **Skills Blocked: "Error: brew not installed"**
+Most skills require Homebrew. Install it in WSL:
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+```
+**⚠️ IMPORTANT:** After installing Homebrew, you MUST restart the gateway for it to detect the new PATH.
+
+#### 4. **Homebrew gcc Download Failures**
+If Homebrew fails downloading gcc due to network issues:
+```bash
+# Fix DNS resolution
+sudo rm /etc/resolv.conf
+echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
+# Retry Homebrew install
+```
+
+#### 5. **Using Bun Instead of pnpm**
+This repo was built for pnpm, but Bun works great and is faster. Replace all `pnpm` commands with `bun`:
+```bash
+# Install Bun
+curl -fsSL https://bun.sh/install | bash
+export BUN_INSTALL="$HOME/.bun" && export PATH="$BUN_INSTALL/bin:$PATH"
+
+# Use Bun for everything
+bun install          # instead of pnpm install
+bun run build        # instead of pnpm build
+bun run clawdbot ... # instead of pnpm clawdbot ...
+```
+
+#### 6. **Build Errors: "Cannot find module './cjs/index.cjs'"**
+You forgot to build the project first:
+```bash
+bun run build        # Compile TypeScript
+bun run ui:build     # Build Control UI
+```
+
+#### 7. **"tsx: command not found"**
+Dependencies not installed:
+```bash
+bun install  # This installs tsx and all other deps
+```
+
+### 🎯 Recommended WSL Setup (Start Here)
+
+**Complete setup from scratch:**
+```bash
+# 1. Install Node.js v22+ with nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+nvm install 22 && nvm use 22 && nvm alias default 22
+
+# 2. Install Bun
+curl -fsSL https://bun.sh/install | bash
+export BUN_INSTALL="$HOME/.bun" && export PATH="$BUN_INSTALL/bin:$PATH"
+echo 'export BUN_INSTALL="$HOME/.bun"' >> ~/.bashrc
+echo 'export PATH="$BUN_INSTALL/bin:$PATH"' >> ~/.bashrc
+
+# 3. Install Homebrew (required for skills)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+# 4. Copy project to WSL filesystem (NOT /mnt/c/)
+cp -r /mnt/c/Users/YOUR_USER/clawdbot ~/clawdbot
+cd ~/clawdbot
+
+# 5. Install deps and build
+bun install
+bun run build
+bun run ui:build
+
+# 6. Run onboarding
+bun run clawdbot onboard
+
+# 7. Start gateway
+bun run clawdbot gateway --port 18789 --verbose
+```
+
+### 📋 Outstanding Issues (TODO)
+
+- [ ] **Fix skills PATH detection** - Gateway doesn't pick up Homebrew PATH on first run (workaround: restart gateway after installing Homebrew)
+- [ ] **Document Bun-specific quirks** - Some scripts may still reference pnpm, need to test all commands with Bun
+- [ ] **WSL-specific docs** - Add dedicated WSL troubleshooting guide
+- [ ] **Improve error messages** - Better error messages for missing dependencies (Homebrew, Node version, etc.)
+- [ ] **Auto-detect environment** - Detect WSL vs native Linux and warn about `/mnt/c/` issues
+- [ ] **Skills installation** - Simplify Homebrew requirement or provide apt alternatives for common tools
+
+### 🐛 Don't Run as Root
+If you see `root@PC`, you're running as root. Create a proper user:
+```bash
+# As root, create a user
+adduser yourname
+usermod -aG sudo yourname
+# Exit and log back in as yourname
+```
+
+---
 
 <p align="center">
   <a href="https://github.com/clawdbot/clawdbot/actions/workflows/ci.yml?branch=main"><img src="https://img.shields.io/github/actions/workflow/status/clawdbot/clawdbot/ci.yml?branch=main&style=for-the-badge" alt="CI status"></a>
